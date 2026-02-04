@@ -21,7 +21,7 @@ What you expected to happen.
 What actually happened.
 
 ## Environment
-- Node version: (e.g. 18.x)
+- Node version: (e.g. 20.x)
 - OS: (e.g. macOS, Windows, Linux)
 - Browser (if UI): (e.g. Chrome 120)
 

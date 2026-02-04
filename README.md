@@ -27,7 +27,7 @@ Create a video by describing it. Example: "2-minute video about forklift safety 
 
 ## Prerequisites
 
-- **Node.js** 18+
+- **Node.js** 20+ (Next.js requires >=20.9.0)
 - **OpenAI API key** – Used for script (GPT), images (DALL·E 3), and narration (TTS). [Get one here](https://platform.openai.com/api-keys).
 - **FFmpeg** – Used to build the final video. The app will use the `ffmpeg-static` binary if available; otherwise it uses `ffmpeg` from your system PATH.  
   - macOS: `brew install ffmpeg`  
