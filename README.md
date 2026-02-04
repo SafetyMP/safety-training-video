@@ -1,5 +1,7 @@
 # Safety Training Video Creator
 
+[![CI](https://github.com/SafetyMP/safety-training-video/actions/workflows/ci.yml/badge.svg)](https://github.com/SafetyMP/safety-training-video/actions/workflows/ci.yml)
+
 **Copyright 2026 Sage Hart.** Licensed under the [Apache License 2.0](LICENSE).
 
 Generate **professional safety training videos** in minutes from a short description—no video production experience required. The app produces scene-by-scene scripts, illustrations, narration, and a finished MP4 with timed captions, with optional fact-checking against EHS (Environmental, Health & Safety) references.
