@@ -18,16 +18,20 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme | null>(null);
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+function getInitialTheme(): Theme | null {
+  if (typeof window === 'undefined') return null;
+  const stored = localStorage.getItem('theme') as Theme | null;
+  return stored && ['light', 'dark', 'system'].includes(stored) ? stored : 'system';
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem('theme') as Theme | null;
-    const initial = stored && ['light', 'dark', 'system'].includes(stored) ? stored : 'system';
-    setThemeState(initial);
-    setResolvedTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-  }, []);
+function getInitialResolvedTheme(): 'light' | 'dark' {
+  if (typeof window === 'undefined') return 'light';
+  return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+}
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setThemeState] = useState<Theme | null>(getInitialTheme);
+  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(getInitialResolvedTheme);
 
   useEffect(() => {
     if (theme === null) return;

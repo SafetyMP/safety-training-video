@@ -4,17 +4,18 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
   useRef,
   type ReactNode,
 } from 'react';
-import type { ScriptResult, Scene, SceneAssets } from '@/lib/types';
-import type { VideoProgress } from '@/app/hooks/useVideoGeneration';
+import { useCostContext } from '@/app/contexts/CostContext';
 import { useHealthCheck } from '@/app/hooks/useHealthCheck';
 import { useScriptGeneration } from '@/app/hooks/useScriptGeneration';
 import { useVideoGeneration } from '@/app/hooks/useVideoGeneration';
-import { useCostContext } from '@/app/contexts/CostContext';
+import type { VideoProgress } from '@/app/hooks/useVideoGeneration';
 import type { VisualStylePreset } from '@/lib/constants';
+import type { ScriptResult, Scene, SceneAssets } from '@/lib/types';
 
 export type Step = 'idle' | 'script' | 'generating' | 'video';
 
@@ -150,7 +151,6 @@ export function VideoFlowProvider({ children }: { children: ReactNode }) {
       setError(result.message);
       setStep('script');
       setShowRetry(true);
-      createVideoRef.current = handleCreateVideo as () => Promise<void>;
     }
   }, [
     script,
@@ -167,6 +167,10 @@ export function VideoFlowProvider({ children }: { children: ReactNode }) {
     setVideoBlobUrl,
     setAssets,
   ]);
+
+  useEffect(() => {
+    createVideoRef.current = handleCreateVideo as () => Promise<void>;
+  }, [handleCreateVideo]);
 
   const handleRegenerateScene = useCallback(
     async (index: number) => {

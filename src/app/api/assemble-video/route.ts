@@ -13,12 +13,13 @@
  * - Uses FFmpeg drawtext filter with enable='between(t,start,end)' for timing
  */
 
-import { NextResponse } from 'next/server';
 import * as fs from 'fs';
-import * as path from 'path';
 import * as os from 'os';
+import * as path from 'path';
+import ffmpegStaticPath from 'ffmpeg-static';
 import ffmpeg from 'fluent-ffmpeg';
-import { withTimeout } from '@/lib/timeout';
+import { NextResponse } from 'next/server';
+import { apiError } from '@/lib/api-errors';
 import {
   MIN_SCENE_DURATION,
   FADE_DURATION,
@@ -30,17 +31,16 @@ import {
   MAX_CAPTION_LENGTH,
 } from '@/lib/constants';
 import { assembleVideoBodySchema, formatValidationErrors } from '@/lib/schemas';
-import { apiError } from '@/lib/api-errors';
+import { withTimeout } from '@/lib/timeout';
 import { withApiHandler } from '@/lib/with-api-handler';
 
 // Import ffmpeg-static at module level for proper bundling
-import ffmpegStaticPath from 'ffmpeg-static';
 
 // Use ffmpeg-static binary - required for drawtext filter support
 function getFfmpegPath(): string {
   // Check if ffmpeg-static path is valid
   if (ffmpegStaticPath && typeof ffmpegStaticPath === 'string' && fs.existsSync(ffmpegStaticPath)) {
-    console.log(`[assemble-video] Using ffmpeg-static: ${ffmpegStaticPath}`);
+    console.warn(`[assemble-video] Using ffmpeg-static: ${ffmpegStaticPath}`);
     return ffmpegStaticPath;
   }
   
@@ -52,13 +52,13 @@ function getFfmpegPath(): string {
   
   for (const p of possiblePaths) {
     if (fs.existsSync(p)) {
-      console.log(`[assemble-video] Using ffmpeg-static (fallback): ${p}`);
+      console.warn(`[assemble-video] Using ffmpeg-static (fallback): ${p}`);
       return p;
     }
   }
   
   // Fallback to system ffmpeg (may not have all filters like drawtext)
-  console.log('[assemble-video] Warning: ffmpeg-static not found, using system ffmpeg (captions may not work)');
+  console.warn('[assemble-video] Warning: ffmpeg-static not found, using system ffmpeg (captions may not work)');
   return 'ffmpeg';
 }
 
@@ -72,7 +72,7 @@ function toSrtTime(seconds: number): string {
 }
 
 /** Build SRT content for one subtitle (full segment duration). */
-function buildSrtContent(caption: string, durationSeconds: number): string {
+function _buildSrtContent(caption: string, durationSeconds: number): string {
   const start = toSrtTime(0);
   const end = toSrtTime(durationSeconds);
   const line = caption.replace(/\s+/g, ' ').trim().slice(0, MAX_CAPTION_LENGTH);
@@ -110,7 +110,7 @@ async function handleAssembleVideo(request: Request): Promise<NextResponse> {
     }
     const { scenes, captions } = parseResult.data;
 
-    console.log(`[assemble-video] Captions enabled: ${captions}, Scene count: ${scenes.length}`);
+    console.warn(`[assemble-video] Captions enabled: ${captions}, Scene count: ${scenes.length}`);
 
     const captionTexts = scenes.map((s) =>
       s.narration != null
@@ -122,7 +122,7 @@ async function handleAssembleVideo(request: Request): Promise<NextResponse> {
         : ''
     );
 
-    console.log(`[assemble-video] Caption texts:`, captionTexts.map((t, i) => `Scene ${i}: ${t.length > 0 ? t.slice(0, 50) + '...' : '(empty)'}`));
+    console.warn(`[assemble-video] Caption texts:`, captionTexts.map((t, i) => `Scene ${i}: ${t.length > 0 ? t.slice(0, 50) + '...' : '(empty)'}`));
 
     const ffmpegPath = getFfmpegPath();
     ffmpeg.setFfmpegPath(ffmpegPath);
@@ -159,7 +159,7 @@ async function handleAssembleVideo(request: Request): Promise<NextResponse> {
       const audioPath = path.join(tmpDir, `scene-${i}.audio`);
       const segmentPath = path.join(tmpDir, `segment-${i}.mp4`);
       fs.writeFileSync(audioPath, Buffer.from(audioBase64, 'base64'));
-      console.log(`[assemble-video] Scene ${i}: Audio file size: ${Buffer.from(audioBase64, 'base64').length} bytes`);
+      console.warn(`[assemble-video] Scene ${i}: Audio file size: ${Buffer.from(audioBase64, 'base64').length} bytes`);
 
       const scalePad =
         `scale=${OUTPUT_WIDTH}:${OUTPUT_HEIGHT}:force_original_aspect_ratio=decrease,` +
@@ -259,8 +259,8 @@ async function handleAssembleVideo(request: Request): Promise<NextResponse> {
         });
         
         vf = `${baseVf},${drawFilters.join(',')}`;
-        console.log(`[assemble-video] Scene ${i}: Timed captions: ${segments.length} segments (word-weighted)`);
-        console.log(`[assemble-video] Scene ${i}: Timings: ${segmentTimings.map((t, idx) => `[${idx}] ${t.start.toFixed(1)}-${t.end.toFixed(1)}s (${wordCounts[idx]} words)`).join(', ')}`);
+        console.warn(`[assemble-video] Scene ${i}: Timed captions: ${segments.length} segments (word-weighted)`);
+        console.warn(`[assemble-video] Scene ${i}: Timings: ${segmentTimings.map((t, idx) => `[${idx}] ${t.start.toFixed(1)}-${t.end.toFixed(1)}s (${wordCounts[idx]} words)`).join(', ')}`);
       }
 
       const runSegment = (filterChain: string, inputSpec: { path: string; isVideo: boolean }) =>
@@ -284,18 +284,18 @@ async function handleAssembleVideo(request: Request): Promise<NextResponse> {
             '-shortest',
           ];
           
-          console.log(`[assemble-video] Scene ${i}: Running FFmpeg`);
-          console.log(`[assemble-video]   Input: ${inputSpec.path} (isVideo: ${inputSpec.isVideo})`);
-          console.log(`[assemble-video]   Audio: ${audioPath}`);
-          console.log(`[assemble-video]   Output: ${segmentPath}`);
-          console.log(`[assemble-video]   Filter: ${filterChain.slice(0, 200)}...`);
+          console.warn(`[assemble-video] Scene ${i}: Running FFmpeg`);
+          console.warn(`[assemble-video]   Input: ${inputSpec.path} (isVideo: ${inputSpec.isVideo})`);
+          console.warn(`[assemble-video]   Audio: ${audioPath}`);
+          console.warn(`[assemble-video]   Output: ${segmentPath}`);
+          console.warn(`[assemble-video]   Filter: ${filterChain.slice(0, 200)}...`);
           
           cmd
             .input(audioPath)
             .outputOptions(outputOpts)
             .output(segmentPath)
             .on('start', (cmdLine: string) => {
-              console.log(`[assemble-video] Scene ${i}: FFmpeg command: ${cmdLine.slice(0, 500)}...`);
+              console.warn(`[assemble-video] Scene ${i}: FFmpeg command: ${cmdLine.slice(0, 500)}...`);
             })
             .on('end', () => resolve())
             .on('error', (err: Error) => reject(err))
@@ -305,19 +305,19 @@ async function handleAssembleVideo(request: Request): Promise<NextResponse> {
       const tryRunSegment = async (filterChain: string, inputSpec: { path: string; isVideo: boolean }) => {
         try {
           await runSegment(filterChain, inputSpec);
-          console.log(`[assemble-video] Scene ${i}: Segment created successfully`);
+          console.warn(`[assemble-video] Scene ${i}: Segment created successfully`);
         } catch (segmentErr) {
           const msg = segmentErr instanceof Error ? segmentErr.message : String(segmentErr);
-          console.log(`[assemble-video] Scene ${i} filter failed: ${msg}`);
+          console.warn(`[assemble-video] Scene ${i} filter failed: ${msg}`);
           
           // If caption filter fails, try without captions
           if (useCaptions && filterChain !== baseVf) {
-            console.log(`[assemble-video] Scene ${i}: Retrying without captions`);
+            console.warn(`[assemble-video] Scene ${i}: Retrying without captions`);
             try {
               await runSegment(baseVf, inputSpec);
-              console.log(`[assemble-video] Scene ${i}: Succeeded without captions`);
+              console.warn(`[assemble-video] Scene ${i}: Succeeded without captions`);
             } catch (noCaptionErr) {
-              console.log(`[assemble-video] Scene ${i}: Still failing without captions: ${noCaptionErr instanceof Error ? noCaptionErr.message : noCaptionErr}`);
+              console.warn(`[assemble-video] Scene ${i}: Still failing without captions: ${noCaptionErr instanceof Error ? noCaptionErr.message : noCaptionErr}`);
               throw noCaptionErr;
             }
           } else {

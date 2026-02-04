@@ -20,11 +20,11 @@
  * For safety training with human subjects, flux or dall-e-3 are recommended.
  */
 
-import { openai } from '@/lib/openai-client';
-import { withRetry } from '@/lib/retry';
-import { withReplicateThrottle } from '@/lib/replicate-throttle';
-import { withTimeout } from '@/lib/timeout';
 import { OPENAI_REQUEST_TIMEOUT_MS } from '@/lib/constants';
+import { openai } from '@/lib/openai-client';
+import { withReplicateThrottle } from '@/lib/replicate-throttle';
+import { withRetry } from '@/lib/retry';
+import { withTimeout } from '@/lib/timeout';
 
 export type ImageProviderId = 'dall-e-3' | 'gpt-image-1-mini' | 'sdxl' | 'flux';
 
@@ -236,7 +236,7 @@ async function generateSdxl(params: ImageGenerateParams): Promise<string> {
  * Flux does not support negative prompts.
  */
 async function generateFlux(params: ImageGenerateParams): Promise<string> {
-  const { prompt, highQuality, styleGuide, rawSceneDescription, negativePrompt } = params;
+  const { prompt, highQuality, styleGuide, rawSceneDescription, negativePrompt: _negativePrompt } = params;
   const token = process.env.REPLICATE_API_TOKEN?.trim();
   if (!token) throw new Error('Image generation service is not configured. Please contact support.');
 

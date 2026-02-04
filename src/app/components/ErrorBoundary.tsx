@@ -62,11 +62,9 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-slate-600 mb-4">
               An error occurred while rendering this section. Please try again.
             </p>
-            {this.state.error && (
-              <p className="text-sm text-slate-500 mb-4 font-mono bg-slate-100 p-2 rounded">
+            {this.state.error ? <p className="text-sm text-slate-500 mb-4 font-mono bg-slate-100 p-2 rounded">
                 {this.state.error.message}
-              </p>
-            )}
+              </p> : null}
             <button
               onClick={this.handleReset}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -99,14 +97,12 @@ export function VideoErrorFallback({ onRetry }: { onRetry?: () => void }): React
       <p className="text-red-600 mb-4">
         There was a problem generating your video. This may be due to a temporary service issue.
       </p>
-      {onRetry && (
-        <button
+      {onRetry ? <button
           onClick={onRetry}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
         >
           Retry Generation
-        </button>
-      )}
+        </button> : null}
     </div>
   );
 }
@@ -128,14 +124,12 @@ export function ScriptErrorFallback({ onRetry }: { onRetry?: () => void }): Reac
       <p className="text-amber-600 mb-4">
         There was a problem generating your script. Please try again with a different prompt.
       </p>
-      {onRetry && (
-        <button
+      {onRetry ? <button
           onClick={onRetry}
           className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
         >
           Retry
-        </button>
-      )}
+        </button> : null}
     </div>
   );
 }

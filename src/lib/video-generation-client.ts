@@ -3,8 +3,8 @@
  * Used by useVideoGeneration and the main page flow.
  */
 
-import type { Scene, SceneAssets } from '@/lib/types';
 import { fetchJson, fetchWithRetry, getApiError } from '@/lib/api-client';
+import type { Scene, SceneAssets } from '@/lib/types';
 
 export interface GenerateSceneAssetOptions {
   styleGuide: string;

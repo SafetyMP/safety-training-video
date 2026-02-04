@@ -1,8 +1,8 @@
 'use client';
 
-import { useVideoFlow } from '@/app/contexts/VideoFlowContext';
-import { Card } from '@/app/components/shared/Card';
 import { Button } from '@/app/components/shared/Button';
+import { Card } from '@/app/components/shared/Card';
+import { useVideoFlow } from '@/app/contexts/VideoFlowContext';
 
 export function VideoResult() {
   const {
@@ -37,8 +37,7 @@ export function VideoResult() {
             aria-label="Generated safety training video"
             className="w-full h-full object-contain"
           />
-          {isRegenerating && (
-            <div
+          {isRegenerating ? <div
               className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/70 text-white"
               role="status"
               aria-live="polite"
@@ -59,13 +58,11 @@ export function VideoResult() {
               >
                 Cancel
               </Button>
-            </div>
-          )}
+            </div> : null}
         </div>
       </Card>
 
-      {assets && assets.length > 0 && (
-        <Card padding="md">
+      {assets && assets.length > 0 ? <Card padding="md">
           <h3 className="text-sm font-medium text-[var(--foreground)] mb-3">
             Regenerate one scene
           </h3>
@@ -85,8 +82,7 @@ export function VideoResult() {
               </Button>
             ))}
           </div>
-        </Card>
-      )}
+        </Card> : null}
 
       <div className="flex flex-col sm:flex-row gap-3">
         <a

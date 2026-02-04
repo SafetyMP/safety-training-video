@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import type { ScriptResult, Scene } from '@/lib/types';
-import { fetchJson } from '@/lib/api-client';
 import { useCostContext } from '@/app/contexts/CostContext';
+import { fetchJson } from '@/lib/api-client';
 import { EST_COST_SCRIPT } from '@/lib/constants';
 import { useDebouncedCallback } from '@/lib/useDebouncedCallback';
 import type { VisualStylePreset } from '@/lib/constants';
+import type { ScriptResult, Scene } from '@/lib/types';
 
 export interface ScriptGenerationOptions {
   prompt: string;

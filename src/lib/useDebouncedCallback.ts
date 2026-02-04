@@ -24,7 +24,9 @@ export function useDebouncedCallback<T extends (...args: unknown[]) => void>(
     }
   }, []);
 
+  // IIFE + type cast required for generic debounced callback; rule expects inline expression
   const debounced = useCallback(
+    // eslint-disable-next-line react-hooks/use-memo -- intentional IIFE for generic T
     ((...args: Parameters<T>) => {
       pendingArgsRef.current = args;
       if (timeoutRef.current) clearTimeout(timeoutRef.current);

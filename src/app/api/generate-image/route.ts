@@ -18,12 +18,12 @@
  */
 
 import { NextResponse } from 'next/server';
+import { apiError } from '@/lib/api-errors';
+import { refinePromptForProvider } from '@/lib/prompt-refinement';
+import { wrapProviderError } from '@/lib/provider-errors';
 import { getImageProvider, getImageProviderId } from '@/lib/providers/image-providers';
 import { generateImageBodySchema, formatValidationErrors } from '@/lib/schemas';
-import { apiError } from '@/lib/api-errors';
-import { wrapProviderError } from '@/lib/provider-errors';
 import { withApiHandler } from '@/lib/with-api-handler';
-import { refinePromptForProvider, PROMPT_REFINEMENT_ENABLED } from '@/lib/prompt-refinement';
 
 /**
  * Extract the core action from a prompt.
@@ -152,7 +152,7 @@ async function handleGenerateImage(request: Request): Promise<NextResponse> {
     providerId,
   });
   
-  console.log(`[generate-image] Scene ${sceneIndex ?? 0}: Provider: ${providerId}, Refined: ${wasRefined}, Action: "${extractAction(imagePrompt) ?? 'none'}"`);
+  console.warn(`[generate-image] Scene ${sceneIndex ?? 0}: Provider: ${providerId}, Refined: ${wasRefined}, Action: "${extractAction(imagePrompt) ?? 'none'}"`);
 
   const provider = getImageProvider();
   try {

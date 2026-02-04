@@ -14,11 +14,11 @@
  * - OpenAI has 6 native voices; extended voices map to closest matches
  */
 
-import { openai } from '@/lib/openai-client';
-import { withRetry } from '@/lib/retry';
-import { withReplicateThrottle } from '@/lib/replicate-throttle';
-import { withTimeout } from '@/lib/timeout';
 import { OPENAI_REQUEST_TIMEOUT_MS } from '@/lib/constants';
+import { openai } from '@/lib/openai-client';
+import { withReplicateThrottle } from '@/lib/replicate-throttle';
+import { withRetry } from '@/lib/retry';
+import { withTimeout } from '@/lib/timeout';
 
 export type TTSProviderId = 'openai' | 'edge' | 'kokoro';
 

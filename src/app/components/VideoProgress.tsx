@@ -1,8 +1,8 @@
 'use client';
 
-import { useVideoFlow } from '@/app/contexts/VideoFlowContext';
-import { Card } from '@/app/components/shared/Card';
 import { Button } from '@/app/components/shared/Button';
+import { Card } from '@/app/components/shared/Card';
+import { useVideoFlow } from '@/app/contexts/VideoFlowContext';
 
 export function VideoProgress() {
   const { progress, cancelVideoGeneration } = useVideoFlow();

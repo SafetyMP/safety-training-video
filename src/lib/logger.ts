@@ -31,7 +31,7 @@ export function logInfo(message: string, context?: LogContext): void {
     .map(([k, v]) => `${k}=${JSON.stringify(v)}`)
     .join(' ');
   if (extra) parts.push(extra);
-  console.log(parts.join(' '));
+  console.warn(parts.join(' '));
 }
 
 /**

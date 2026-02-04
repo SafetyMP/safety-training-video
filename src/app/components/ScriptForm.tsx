@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { VOICES, AUDIENCES, TEMPLATES, VISUAL_STYLE_PRESETS, getRecommendedVoice } from '@/lib/constants';
-import type { VisualStylePreset, VoiceCategory } from '@/lib/constants';
-import { useVideoFlow } from '@/app/contexts/VideoFlowContext';
-import { useCostContext } from '@/app/contexts/CostContext';
 import { Button } from '@/app/components/shared/Button';
 import { Card } from '@/app/components/shared/Card';
+import { useCostContext } from '@/app/contexts/CostContext';
+import { useVideoFlow } from '@/app/contexts/VideoFlowContext';
+import { VOICES, AUDIENCES, TEMPLATES, VISUAL_STYLE_PRESETS, getRecommendedVoice } from '@/lib/constants';
 import { MAX_PROMPT_LENGTH } from '@/lib/constants';
+import type { VisualStylePreset } from '@/lib/constants';
 
 const TEMPLATE_ICONS: Record<string, string> = {
   'Forklift safety': '🚜',
@@ -80,11 +80,9 @@ export function ScriptForm() {
           onChange={(e) => setPrompt(e.target.value)}
           onBlur={() => setPromptTouched(true)}
         />
-        {showPromptError && (
-          <p id="prompt-error" className="mt-2 text-xs text-red-600 dark:text-red-400" role="alert">
+        {showPromptError ? <p id="prompt-error" className="mt-2 text-xs text-red-600 dark:text-red-400" role="alert">
             Please enter a short description to generate a script.
-          </p>
-        )}
+          </p> : null}
         <div
           id="prompt-count"
           className={`mt-1 text-xs text-right tabular-nums ${
@@ -146,8 +144,7 @@ export function ScriptForm() {
             ▼
           </span>
         </button>
-        {optionsOpen && (
-          <Card padding="md" className="mt-2">
+        {optionsOpen ? <Card padding="md" className="mt-2">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <label className="flex flex-col gap-1.5 text-sm sm:col-span-2">
                 <span className="text-[var(--muted)]">Visual style</span>
@@ -282,17 +279,16 @@ export function ScriptForm() {
                 </span>
               </label>
             </div>
-          </Card>
-        )}
+          </Card> : null}
       </div>
 
       <Button
         onClick={handleGenerateClick}
         disabled={promptIsEmpty || (isGenerating && !hasScript)}
-        aria-busy={isGenerating && !hasScript}
+        aria-busy={isGenerating ? !hasScript : null}
         fullWidth
         size="lg"
-        isLoading={isGenerating && !hasScript}
+        isLoading={isGenerating ? !hasScript : null}
       >
         {isGenerating && !hasScript ? 'Generating script…' : 'Generate script'}
       </Button>

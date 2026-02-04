@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { ProviderCapabilities } from '@/app/components/ProviderCapabilities';
-import { CostBreakdown } from '@/app/components/shared/CostBreakdown';
 import { Card } from '@/app/components/shared/Card';
+import { CostBreakdown } from '@/app/components/shared/CostBreakdown';
 
 export function Sidebar({
   children,

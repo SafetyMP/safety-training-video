@@ -53,9 +53,7 @@ export function CardHeader({
       <h2 className="text-lg font-display font-semibold text-[var(--foreground)]">
         {title}
       </h2>
-      {description && (
-        <p className="mt-1 text-sm text-[var(--muted)]">{description}</p>
-      )}
+      {description ? <p className="mt-1 text-sm text-[var(--muted)]">{description}</p> : null}
     </div>
   );
 }

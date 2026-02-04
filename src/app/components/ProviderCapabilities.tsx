@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchProviderConfig } from '@/lib/video-generation-client';
 import { EST_COST_VIDEO } from '@/lib/constants';
+import { fetchProviderConfig } from '@/lib/video-generation-client';
 
 const IMAGE_LABELS: Record<string, string> = {
   'dall-e-3': 'DALL-E 3',

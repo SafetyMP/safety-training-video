@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { isVideoProviderEnabled } from '@/lib/providers/video-providers';
 import { IMAGE_PROVIDER, TTS_PROVIDER } from '@/lib/constants';
+import { isVideoProviderEnabled } from '@/lib/providers/video-providers';
 import { getRegulatoryApiStatus } from '@/lib/regulatory-api';
 
 /**

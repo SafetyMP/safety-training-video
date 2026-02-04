@@ -1,18 +1,18 @@
 'use client';
 
+import { ErrorBoundary } from '@/app/components/ErrorBoundary';
+import { Header } from '@/app/components/layout/Header';
+import { Sidebar } from '@/app/components/layout/Sidebar';
+import { StepStepper } from '@/app/components/layout/StepStepper';
+import { ScriptEditor } from '@/app/components/ScriptEditor';
+import { ScriptForm } from '@/app/components/ScriptForm';
+import { Card } from '@/app/components/shared/Card';
+import { VideoProgress } from '@/app/components/VideoProgress';
+import { VideoResult } from '@/app/components/VideoResult';
 import { CostProvider } from '@/app/contexts/CostContext';
 import { ThemeProvider } from '@/app/contexts/ThemeContext';
 import { VideoFlowProvider, useVideoFlow } from '@/app/contexts/VideoFlowContext';
-import { ScriptForm } from '@/app/components/ScriptForm';
-import { ScriptEditor } from '@/app/components/ScriptEditor';
-import { VideoProgress } from '@/app/components/VideoProgress';
-import { VideoResult } from '@/app/components/VideoResult';
-import { ErrorBoundary } from '@/app/components/ErrorBoundary';
 import { useKeyboardShortcuts } from '@/app/hooks/useKeyboardShortcuts';
-import { StepStepper } from '@/app/components/layout/StepStepper';
-import { Sidebar } from '@/app/components/layout/Sidebar';
-import { Header } from '@/app/components/layout/Header';
-import { Card } from '@/app/components/shared/Card';
 
 function HomeContent() {
   const {
@@ -106,14 +106,13 @@ function HomeContent() {
               </Card>
             )}
 
-            {script && (step === 'script' || step === 'generating') && <ScriptEditor />}
+            {script && (step === 'script' || step === 'generating') ? <ScriptEditor /> : null}
 
             {step === 'generating' && <VideoProgress />}
 
             {step === 'video' && <VideoResult />}
 
-            {error && step !== 'script' && (
-              <Card
+            {error && step !== 'script' ? <Card
                 padding="md"
                 className="mt-6 border-red-500/50 bg-red-500/5 dark:bg-red-500/10"
                 role="alert"
@@ -130,17 +129,14 @@ function HomeContent() {
                     Dismiss
                   </button>
                 </div>
-                {retryCreateVideo && (
-                  <button
+                {retryCreateVideo ? <button
                     type="button"
                     onClick={retryCreateVideo}
                     className="mt-3 px-3 py-1.5 text-sm font-medium bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-900/50 rounded text-red-800 dark:text-red-200"
                   >
                     Retry
-                  </button>
-                )}
-              </Card>
-            )}
+                  </button> : null}
+              </Card> : null}
 
             <p className="mt-8 text-xs text-[var(--muted)]">
               Review content for accuracy before using in official training. You are billed by

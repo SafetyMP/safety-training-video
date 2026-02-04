@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import type { Scene, SceneAssets } from '@/lib/types';
+import { useCostContext, estimateSceneCost } from '@/app/contexts/CostContext';
 import {
   ETA_SECONDS_PER_SCENE,
   ETA_ASSEMBLY_SECONDS,
@@ -14,7 +14,7 @@ import {
   type VideoGenerationOptions,
   type GenerateSceneAssetOptions,
 } from '@/lib/video-generation-client';
-import { useCostContext, estimateSceneCost } from '@/app/contexts/CostContext';
+import type { Scene, SceneAssets } from '@/lib/types';
 
 export interface VideoProgress {
   current: number;

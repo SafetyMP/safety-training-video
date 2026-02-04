@@ -17,12 +17,12 @@
  */
 
 import { NextResponse } from 'next/server';
+import { apiError } from '@/lib/api-errors';
+import { refinePromptForProvider } from '@/lib/prompt-refinement';
+import { wrapProviderError } from '@/lib/provider-errors';
 import { getVideoProvider, isVideoProviderEnabled, getVideoProviderId } from '@/lib/providers/video-providers';
 import { generateVideoBodySchema, formatValidationErrors } from '@/lib/schemas';
-import { apiError } from '@/lib/api-errors';
-import { wrapProviderError } from '@/lib/provider-errors';
 import { withApiHandler } from '@/lib/with-api-handler';
-import { refinePromptForProvider } from '@/lib/prompt-refinement';
 
 async function handleGenerateVideo(request: Request): Promise<NextResponse> {
   if (!isVideoProviderEnabled()) {
@@ -52,7 +52,7 @@ async function handleGenerateVideo(request: Request): Promise<NextResponse> {
     providerId,
   });
 
-  console.log(`[generate-video] Scene ${sceneIndex ?? 0}: Provider: ${providerId}, Refined: ${wasRefined}`);
+  console.warn(`[generate-video] Scene ${sceneIndex ?? 0}: Provider: ${providerId}, Refined: ${wasRefined}`);
 
   const provider = getVideoProvider();
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getApiError, fetchWithRetry, fetchJson } from './api-client';
+import { getApiError, fetchWithRetry } from './api-client';
 
 describe('api-client', () => {
   describe('getApiError', () => {

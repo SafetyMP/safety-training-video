@@ -13,11 +13,9 @@
  * transforms image-oriented prompts into video-optimized prompts.
  */
 
-import { withRetry } from '@/lib/retry';
 import { withReplicateThrottle } from '@/lib/replicate-throttle';
+import { withRetry } from '@/lib/retry';
 import { withTimeout } from '@/lib/timeout';
-import { OPENAI_REQUEST_TIMEOUT_MS } from '@/lib/constants';
-
 export type VideoProviderId = 'off' | 'wan';
 
 export interface VideoGenerateParams {
@@ -191,7 +189,7 @@ async function generateWan(params: VideoGenerateParams): Promise<VideoGenerateRe
     fullPrompt = `${videoPrompt} ${physicsLayer}`.slice(0, 2000);
   }
   
-  console.log(`[video-provider] Wan 2.1 prompt (refined: ${wasRefined ?? false}): ${fullPrompt.slice(0, 200)}...`);
+  console.warn(`[video-provider] Wan 2.1 prompt (refined: ${wasRefined ?? false}): ${fullPrompt.slice(0, 200)}...`);
   
   const token = process.env.REPLICATE_API_TOKEN?.trim();
   if (!token) throw new Error('Video generation service is not configured. Please contact support.');

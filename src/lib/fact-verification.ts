@@ -8,11 +8,11 @@
  * and unverifiable claims are flagged for manual review.
  */
 
+import { OPENAI_REQUEST_TIMEOUT_MS, OPENAI_SCRIPT_MODEL } from '@/lib/constants';
+import { getVerificationContextForTopics } from '@/lib/ehs-reference';
 import { openai } from '@/lib/openai-client';
 import { withRetry } from '@/lib/retry';
 import { withTimeout } from '@/lib/timeout';
-import { OPENAI_REQUEST_TIMEOUT_MS, OPENAI_SCRIPT_MODEL } from '@/lib/constants';
-import { getVerificationContextForTopics } from '@/lib/ehs-reference';
 import type { FactVerificationResult, ScriptResult, Scene } from '@/lib/types';
 
 const CLAIM_TYPES = ['statistic', 'regulation', 'procedure', 'time_limit', 'other'] as const;

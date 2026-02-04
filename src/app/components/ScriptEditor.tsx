@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import type { ScriptResult, Scene, EHSValidation, FactVerificationResult } from '@/lib/types';
-import { useVideoFlow } from '@/app/contexts/VideoFlowContext';
-import { useCostContext, estimateVideoCost } from '@/app/contexts/CostContext';
 import { Button } from '@/app/components/shared/Button';
 import { Card } from '@/app/components/shared/Card';
+import { useCostContext, estimateVideoCost } from '@/app/contexts/CostContext';
+import { useVideoFlow } from '@/app/contexts/VideoFlowContext';
+import type { Scene, EHSValidation, FactVerificationResult } from '@/lib/types';
 
 function FactVerificationBanner({ results }: { results: FactVerificationResult[] }) {
   const [expanded, setExpanded] = useState(false);
@@ -37,8 +37,7 @@ function FactVerificationBanner({ results }: { results: FactVerificationResult[]
           ▼
         </span>
       </button>
-      {expanded && (
-        <ul className="mt-3 space-y-2 list-none pl-0 border-t border-[var(--card-border)] pt-3">
+      {expanded ? <ul className="mt-3 space-y-2 list-none pl-0 border-t border-[var(--card-border)] pt-3">
           {results.map((r, i) => (
             <li
               key={`fv-${i}`}
@@ -65,18 +64,13 @@ function FactVerificationBanner({ results }: { results: FactVerificationResult[]
               >
                 ({r.status.replace('_', ' ')})
               </span>
-              {r.source && (
-                <p className="mt-0.5 text-xs text-[var(--muted)]">Source: {r.source}</p>
-              )}
-              {r.correction && (
-                <p className="mt-0.5 text-xs text-red-600 dark:text-red-400">
+              {r.source ? <p className="mt-0.5 text-xs text-[var(--muted)]">Source: {r.source}</p> : null}
+              {r.correction ? <p className="mt-0.5 text-xs text-red-600 dark:text-red-400">
                   Suggested: {r.correction}
-                </p>
-              )}
+                </p> : null}
             </li>
           ))}
-        </ul>
-      )}
+        </ul> : null}
     </Card>
   );
 }
@@ -107,20 +101,15 @@ function EHSValidationBanner({ validation }: { validation: EHSValidation }) {
           ▼
         </span>
       </button>
-      {expanded && (
-        <ul className="mt-3 space-y-1 list-disc list-inside text-sm text-[var(--muted)] border-t border-[var(--card-border)] pt-3">
-          {hasWarnings && warnings!.map((w, i) => <li key={`w-${i}`}>{w}</li>)}
-          {hasMyths && <li>Myths / avoid: {mythsFlagged!.join('; ')}</li>}
-          {hasTerminology && (
-            <li>
+      {expanded ? <ul className="mt-3 space-y-1 list-disc list-inside text-sm text-[var(--muted)] border-t border-[var(--card-border)] pt-3">
+          {hasWarnings ? warnings!.map((w, i) => <li key={`w-${i}`}>{w}</li>) : null}
+          {hasMyths ? <li>Myths / avoid: {mythsFlagged!.join('; ')}</li> : null}
+          {hasTerminology ? <li>
               Prefer:{' '}
               {terminologySuggestions!.map((s) => `"${s.prefer}" over "${s.found}"`).join('; ')}
-            </li>
-          )}
-          {hasMissing &&
-            missingRecommendations!.slice(0, 5).map((m, i) => <li key={`m-${i}`}>{m}</li>)}
-        </ul>
-      )}
+            </li> : null}
+          {hasMissing ? missingRecommendations!.slice(0, 5).map((m, i) => <li key={`m-${i}`}>{m}</li>) : null}
+        </ul> : null}
     </Card>
   );
 }
@@ -168,8 +157,7 @@ export function ScriptEditor() {
     <div ref={scriptResultRef as React.Ref<HTMLDivElement>} className="space-y-5" tabIndex={-1}>
       <h2 className="text-xl font-display font-semibold text-[var(--foreground)]">{script.title}</h2>
 
-      {script.unverifiedSignMentions && script.unverifiedSignMentions.length > 0 && (
-        <Card
+      {script.unverifiedSignMentions && script.unverifiedSignMentions.length > 0 ? <Card
           padding="sm"
           className="border-amber-500/50 bg-amber-500/5 dark:bg-amber-500/10"
           role="status"
@@ -185,19 +173,14 @@ export function ScriptEditor() {
               </li>
             ))}
           </ul>
-        </Card>
-      )}
+        </Card> : null}
 
-      {script.ehsValidation && <EHSValidationBanner validation={script.ehsValidation} />}
-      {script.factVerification && script.factVerification.length > 0 && (
-        <FactVerificationBanner results={script.factVerification} />
-      )}
+      {script.ehsValidation ? <EHSValidationBanner validation={script.ehsValidation} /> : null}
+      {script.factVerification && script.factVerification.length > 0 ? <FactVerificationBanner results={script.factVerification} /> : null}
 
-      {script.regulatorySources && script.regulatorySources.length > 0 && (
-        <p className="text-xs text-[var(--muted)]" role="status">
+      {script.regulatorySources && script.regulatorySources.length > 0 ? <p className="text-xs text-[var(--muted)]" role="status">
           Live regulations used: {script.regulatorySources.join(', ')}
-        </p>
-      )}
+        </p> : null}
 
       <p className="text-sm text-[var(--muted)]">
         Edit narration below if you like, then create the video. Approx.{' '}
@@ -219,33 +202,26 @@ export function ScriptEditor() {
         ))}
       </ul>
 
-      {showCreateButton && (
-        <div className="space-y-4 pt-2">
-          {error && (
-            <Card
+      {showCreateButton ? <div className="space-y-4 pt-2">
+          {error ? <Card
               padding="md"
               className="border-red-500/50 bg-red-500/5 dark:bg-red-500/10"
               role="alert"
               aria-live="polite"
             >
               <p className="text-red-700 dark:text-red-300">{error}</p>
-              {retryCreateVideo && (
-                <Button
+              {retryCreateVideo ? <Button
                   variant="destructive"
                   size="sm"
                   onClick={retryCreateVideo}
                   className="mt-3"
                 >
                   Retry
-                </Button>
-              )}
-            </Card>
-          )}
-          {isCostBlocked && costBlockedMessage && (
-            <p className="text-sm text-amber-600 dark:text-amber-400" role="alert">
+                </Button> : null}
+            </Card> : null}
+          {isCostBlocked && costBlockedMessage ? <p className="text-sm text-amber-600 dark:text-amber-400" role="alert">
               {costBlockedMessage}
-            </p>
-          )}
+            </p> : null}
           <Button
             onClick={handleCreateVideo}
             disabled={isCostBlocked}
@@ -269,8 +245,7 @@ export function ScriptEditor() {
             </kbd>
             to cancel
           </p>
-        </div>
-      )}
+        </div> : null}
     </div>
   );
 }
@@ -310,15 +285,13 @@ function SceneCard({
           {showPrompt ? 'Hide image prompt' : 'Show image prompt'}
         </button>
       </div>
-      {showPrompt && (
-        <p
+      {showPrompt ? <p
           id={`image-prompt-${index}`}
           className="text-xs text-[var(--muted)] italic mb-3 p-2 rounded bg-[var(--background)]"
           title={scene.imagePrompt}
         >
           {scene.imagePrompt}
-        </p>
-      )}
+        </p> : null}
       <textarea
         id={textareaId}
         aria-labelledby={labelId}

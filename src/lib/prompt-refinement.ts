@@ -371,7 +371,7 @@ export async function refinePromptForProvider(
       refinedPrompt = refinedPrompt.slice(0, guidelines.maxLength - 3) + '...';
     }
 
-    console.log(`[prompt-refinement] Refined for ${providerId}: "${refinedPrompt.slice(0, 80)}..."`);
+    console.warn(`[prompt-refinement] Refined for ${providerId}: "${refinedPrompt.slice(0, 80)}..."`);
 
     return {
       refinedPrompt,

@@ -57,12 +57,10 @@ export function Button({
       `}
       {...props}
     >
-      {isLoading && (
-        <span
+      {isLoading ? <span
           className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin shrink-0"
           aria-hidden
-        />
-      )}
+        /> : null}
       {children}
     </button>
   );

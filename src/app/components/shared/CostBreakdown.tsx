@@ -8,7 +8,7 @@ export function CostBreakdown() {
     totalCost,
     isWarned,
     isBlocked,
-    warnThreshold,
+    warnThreshold: _warnThreshold,
     blockThreshold,
     providerConfig,
   } = useCostContext();
@@ -72,16 +72,12 @@ export function CostBreakdown() {
           </p>
         </div>
       )}
-      {isWarned && !isBlocked && (
-        <p className="text-xs text-amber-600 dark:text-amber-400">
+      {isWarned && !isBlocked ? <p className="text-xs text-amber-600 dark:text-amber-400">
           Approaching ${blockThreshold.toFixed(2)} limit
-        </p>
-      )}
-      {isBlocked && (
-        <p className="text-xs text-red-600 dark:text-red-400">
+        </p> : null}
+      {isBlocked ? <p className="text-xs text-red-600 dark:text-red-400">
           Limit reached. Start over to reset.
-        </p>
-      )}
+        </p> : null}
       {estVideoCost != null && step !== 'video' && (
         <p className="text-xs text-[var(--muted)]">
           Est. next video: ~${estVideoCost.toFixed(2)}

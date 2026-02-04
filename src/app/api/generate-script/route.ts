@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import { openai } from '@/lib/openai-client';
 import { zodResponseFormat } from 'openai/helpers/zod';
-import { withRetry } from '@/lib/retry';
-import { withTimeout } from '@/lib/timeout';
 import { z } from 'zod';
+import { apiError } from '@/lib/api-errors';
 import {
   OPENAI_REQUEST_TIMEOUT_MS,
   SCRIPT_MAX_TOKENS,
@@ -13,21 +11,24 @@ import {
   type VisualStylePreset,
 } from '@/lib/constants';
 import {
-  generateScriptBodySchema,
-  scriptResultSchema,
-  formatValidationErrors,
-} from '@/lib/schemas';
-import { apiError } from '@/lib/api-errors';
-import { getUnverifiedSignMentions, ALLOWED_SIGNAL_WORDS } from '@/lib/safety-signs-reference';
-import {
   getContextForPrompt,
   getTopicsForPrompt,
   getCitationsForTopics,
   validateContentAgainstReference,
 } from '@/lib/ehs-reference';
-import { fetchRegulationsForCitations, getRegulatoryApiStatus } from '@/lib/regulatory-api';
 import { verifyScriptFacts } from '@/lib/fact-verification';
+import { openai } from '@/lib/openai-client';
+import { fetchRegulationsForCitations } from '@/lib/regulatory-api';
+import { withRetry } from '@/lib/retry';
+import { getUnverifiedSignMentions, ALLOWED_SIGNAL_WORDS } from '@/lib/safety-signs-reference';
+import {
+  generateScriptBodySchema,
+  scriptResultSchema,
+  formatValidationErrors,
+} from '@/lib/schemas';
+import { withTimeout } from '@/lib/timeout';
 import { withApiHandler, type ApiHandlerContext } from '@/lib/with-api-handler';
+import type { FactVerificationResult } from '@/lib/types';
 
 const FACT_VERIFICATION_ENABLED = process.env.FACT_VERIFICATION_ENABLED !== 'false';
 const REGULATORY_API_ENABLED = process.env.REGULATORY_API_ENABLED !== 'false';
@@ -294,7 +295,7 @@ async function handleGenerateScript(
     ehsValidation.terminologySuggestions.length > 0 ||
     ehsValidation.missingRecommendations.length > 0;
 
-  let factVerification: import('@/lib/types').FactVerificationResult[] | undefined;
+  let factVerification: FactVerificationResult[] | undefined;
   if (FACT_VERIFICATION_ENABLED && topicIds.length > 0) {
     try {
       factVerification = await verifyScriptFacts(data, topicIds);

@@ -7,11 +7,11 @@
  * Skips when required env vars are missing (e.g. in CI without keys).
  */
 import { describe, it, expect } from 'vitest';
+import { openai } from '@/lib/openai-client';
 import { getImageProvider } from '@/lib/providers/image-providers';
 import { getTTSProvider } from '@/lib/providers/tts-providers';
 import { getVideoProvider } from '@/lib/providers/video-providers';
 import { fetchRegulationSection, fetchRegulationsForCitations } from '@/lib/regulatory-api';
-import { openai } from '@/lib/openai-client';
 
 const hasOpenAI = Boolean(process.env.OPENAI_API_KEY?.trim());
 const hasReplicate = Boolean(process.env.REPLICATE_API_TOKEN?.trim());

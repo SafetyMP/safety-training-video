@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getTTSProvider } from '@/lib/providers/tts-providers';
-import { generateAudioBodySchema, formatValidationErrors } from '@/lib/schemas';
 import { apiError } from '@/lib/api-errors';
 import { wrapProviderError } from '@/lib/provider-errors';
+import { getTTSProvider } from '@/lib/providers/tts-providers';
+import { generateAudioBodySchema, formatValidationErrors } from '@/lib/schemas';
 import { withApiHandler, type ApiHandlerContext } from '@/lib/with-api-handler';
 
 async function handleGenerateAudio(

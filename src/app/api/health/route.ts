@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { isVideoProviderEnabled, getVideoProviderId } from '@/lib/providers/video-providers';
+import { TTS_PROVIDER } from '@/lib/constants';
 import { getImageProviderId } from '@/lib/providers/image-providers';
+import { isVideoProviderEnabled, getVideoProviderId } from '@/lib/providers/video-providers';
 import { getRegulatoryApiStatus } from '@/lib/regulatory-api';
-import { IMAGE_PROVIDER, TTS_PROVIDER } from '@/lib/constants';
 
 /**
  * Health check endpoint that returns status of all configured providers.
