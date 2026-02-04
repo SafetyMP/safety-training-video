@@ -2,12 +2,26 @@
 
 **Copyright 2026 Sage Hart.** Licensed under the [Apache License 2.0](LICENSE).
 
-Create **professional safety training videos** from natural language. Describe the video you want (e.g. "2-minute video about forklift safety in a warehouse"), and the app will:
+Generate **professional safety training videos** in minutes from a short description—no video production experience required. The app produces scene-by-scene scripts, illustrations, narration, and a finished MP4 with timed captions, with optional fact-checking against EHS (Environmental, Health & Safety) references.
+
+**For business users:** Describe the topic (e.g. "forklift safety in a warehouse"); choose audience, voice, and style; get a draft video you can refine or download. Ideal for training coordinators, EHS managers, and teams who need consistent, low-cost safety content.
+
+**For technical users:** Next.js 16 app with TypeScript, OpenAI APIs, optional Replicate (SDXL/Flux/Kokoro), and FFmpeg. Configure providers via env; run locally or deploy. See [Prerequisites](#prerequisites) and [Setup](#setup) below, and [Project structure](#project-structure) for the codebase.
+
+---
+
+Create a video by describing it. Example: "2-minute video about forklift safety in a warehouse." The app will:
 
 1. **Generate a script** – Scene-by-scene narration with image prompts that accurately depict the narration (via OpenAI GPT), with optional fact verification against EHS regulations.
 2. **Generate illustrations** – One illustration per scene with realistic proportions and consistent characters (DALL·E 3/SDXL/Flux Dev).
 3. **Generate narration** – Text-to-speech for each scene (OpenAI TTS, Edge TTS, or Kokoro) with **18 voice options** organized by category.
 4. **Assemble the video** – Stitch images and audio into an MP4 with **synchronized timed captions** (FFmpeg).
+
+### Use cases
+
+- **Compliance and onboarding** – Quick refreshers or new-hire safety modules (PPE, fire evacuation, slip/trip hazards).
+- **Topic-specific training** – Focused videos on forklift safety, lockout-tagout, confined space, etc., with narration aligned to your audience.
+- **Draft content for review** – Generate a draft, then have safety or legal review before rollout (recommended; see [Notes](#notes)).
 
 ## Prerequisites
 
@@ -27,7 +41,7 @@ Create **professional safety training videos** from natural language. Describe t
 
 2. **Configure environment**
 
-   Copy `.env.example` to `.env` and set your OpenAI API key:
+   Copy `.env.example` to `.env` and set your OpenAI API key. See `.env.example` for all options (providers, rate limiting, feature flags).
 
    ```bash
    cp .env.example .env
@@ -121,6 +135,8 @@ Scripts are automatically verified against EHS (Environmental Health & Safety) r
 
 ## Project structure
 
+**Stack:** Next.js 16 (App Router), React 18, TypeScript, Tailwind CSS. APIs: OpenAI (script, images, TTS), optional Replicate (SDXL/Flux/Kokoro/Wan), Edge TTS; FFmpeg for assembly.
+
 ```
 src/
 ├── app/
@@ -141,7 +157,7 @@ src/
 │   ├── ehs-reference.ts     # Safety regulation data
 │   ├── fact-verification.ts # AI fact checking
 │   └── schemas.ts           # Zod validation schemas
-└── docs/                    # Implementation plans
+└── docs/                    # EHS accuracy plan, Tier 2/3 provider plans
 ```
 
 ## Testing video generation
@@ -169,7 +185,16 @@ src/
 - **API costs:** See [Estimated cost per video](#estimated-cost-per-video) above. Cost depends on length and scene count.
 - **Payload size:** Many or long scenes mean a large request to `/api/assemble-video`. If you hit body size limits, reduce the number of scenes or deploy with a higher limit.
 - **Compliance:** Treat generated content as a draft. Have safety or legal review before using in official training.
+- **Production:** The app has no built-in authentication. For public or shared deployment, add auth and consider rate limiting; see [SECURITY.md](SECURITY.md) and `AUDIT.md` for guidance.
+
+## Contributing
+
+Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and the pull request process. By participating, you agree to uphold our [Code of Conduct](CODE_OF_CONDUCT.md). Security issues should be reported as described in [SECURITY.md](SECURITY.md).
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## License
 
-This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for the full text. Copyright 2026 Sage Hart.
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for the full text. Copyright 2026 Sage Hart. See [NOTICE](NOTICE) for attribution.
