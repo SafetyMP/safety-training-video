@@ -1,6 +1,6 @@
 # Safety Training Video Creator
 
-[![CI](https://github.com/SafetyMP/safety-training-video/actions/workflows/ci.yml/badge.svg)](https://github.com/SafetyMP/safety-training-video/actions/workflows/ci.yml)
+[![CI](https://github.com/SafetyMP/safety-training-video/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/SafetyMP/safety-training-video/actions/workflows/ci.yml)
 
 **Copyright 2026 Sage Hart.** Licensed under the [Apache License 2.0](LICENSE).
 
