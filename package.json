@@ -1,0 +1,50 @@
+{
+  "name": "safety-training-video-app",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Sage Hart",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "dotenv -e .env --override -- npx next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:api": "vitest run src/app/api",
+    "test:integration": "dotenv -e .env -o -- vitest run --config vitest.integration.config.ts --no-isolate",
+    "test:watch": "vitest",
+    "test:video": "node scripts/test-video-generation.mjs"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.36.2",
+    "edge-tts-node": "^1.5.7",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "next": "^16.1.6",
+    "openai": "^4.52.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "replicate": "^1.4.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/fluent-ffmpeg": "^2.1.24",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.19",
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.6",
+    "jsdom": "^28.0.0",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5",
+    "vitest": "^2.1.0"
+  }
+}

@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #0f172a;
+  --background: #f8fafc;
+  --card: #ffffff;
+  --card-border: #e2e8f0;
+  --muted: #475569;
+  --muted-foreground: #94a3b8;
+  --primary: #0d9488;
+  --primary-foreground: #ffffff;
+  --primary-hover: #0f766e;
+  --accent: #f59e0b;
+  --accent-foreground: #78350f;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #059669;
+  --warning: #d97706;
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
+  --sidebar-width: 18rem;
+  --transition: 200ms ease;
+}
+
+.dark {
+  --foreground: #f1f5f9;
+  --background: #0f172a;
+  --card: #1e293b;
+  --card-border: #334155;
+  --muted: #94a3b8;
+  --muted-foreground: #94a3b8;
+  --primary: #2dd4bf;
+  --primary-foreground: #0f172a;
+  --primary-hover: #5eead4;
+  --accent: #fbbf24;
+  --accent-foreground: #78350f;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --success: #10b981;
+  --warning: #f59e0b;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  transition: background-color var(--transition), color var(--transition);
+}
+
+/* Smooth transitions for theme switch */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
