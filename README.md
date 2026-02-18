@@ -61,16 +61,21 @@ Create a video by describing it. Example: "2-minute video about forklift safety 
 ## How to use
 
 1. Enter a short description of the safety video (or use a **template**: Forklift safety, Slip and trip hazards, PPE basics, Fire evacuation).
-2. Set **Options**:
-   - **Audience**: All / New hires / Refresher
-   - **Voice**: Choose from 18 voices organized by category (Authoritative, Professional, Friendly, Warm, Energetic). The app suggests voices based on your topic!
-   - **Visual style**: Illustration, realistic, semi-realistic, stylized 3D
-   - **Draft mode**: 3 scenes, lower cost
-   - **High-quality images**: More detail, higher cost
-   - **Closed captions**: Burn synchronized, timed narration into the video
-3. Click **Generate script** – you'll see a title and editable scene list with narration.
-4. Edit narration if you like, then click **Create video** – the app generates images and audio per scene, then assembles the MP4.
+2. Set options: audience, voice, visual style, and quality. See [Options](#options) below.
+3. Click **Generate script** -- you'll see a title and editable scene list with narration.
+4. Edit narration if you like, then click **Create video** -- the app generates images and audio per scene, then assembles the MP4.
 5. Watch the result, use **Regenerate scene** for any single scene if needed, then **Download video**.
+
+### Options
+
+| Option | Choices | Notes |
+|--------|---------|-------|
+| **Audience** | All / New hires / Refresher | Adjusts tone and complexity |
+| **Voice** | 18 voices in 5 categories | The app suggests a voice based on your topic |
+| **Visual style** | Illustration, realistic, semi-realistic, stylized 3D | |
+| **Draft mode** | On / Off | 3 scenes instead of 6; lower cost |
+| **High-quality images** | On / Off | More detail; higher cost |
+| **Closed captions** | On / Off | Burns synchronized timed narration into the video |
 
 ### Voice Categories
 
@@ -122,18 +127,35 @@ Costs depend on which providers you configure. The app supports multiple tiers:
 
 ## Features
 
+### Fact Verification
+
+Generated scripts are checked for accuracy at three levels:
+
+1. **EHS reference library** – A built-in dataset of 21 safety topics (PPE, lockout-tagout, confined spaces, etc.) with regulations, best practices, and common misconceptions. Scripts are cross-referenced automatically.
+2. **AI verification** – A second GPT pass reviews the generated script for unsupported claims about regulations, procedures, or statistics. Unverifiable claims are flagged for human review.
+3. **Live regulatory lookup** – The app queries the eCFR.gov API to pull current OSHA regulation text, so verification stays up to date as rules change.
+
+All three layers run by default. Disable with `FACT_VERIFICATION_ENABLED=false` to skip the extra API call.
+
+### Swappable Providers
+
+Image generation, text-to-speech, and video clip providers are abstracted behind consistent interfaces. Switch providers by changing environment variables -- no code changes required. This lets you choose the cost/quality tradeoff that fits your use case, from free (Edge TTS, SDXL) to premium (DALL·E 3, OpenAI TTS). See [Estimated cost per video](#estimated-cost-per-video) for a full comparison.
+
 ### Timed Captions
-Captions are synchronized with narration using word-weighted timing. Longer phrases display proportionally longer, matching natural speech rhythm.
+
+Captions are synchronized with narration using word-weighted timing. Longer phrases display proportionally longer, matching natural speech rhythm. Captions are burned into the MP4 during FFmpeg assembly.
 
 ### Image Quality
-The image generation includes built-in quality prompts for:
+
+Image prompts are automatically refined per provider (natural language for DALL·E 3, keyword-tag format for SDXL, style-positioned for Flux). Built-in quality constraints enforce:
 - Anatomically correct humans with proper proportions
 - Realistic hands with correct finger count
 - Physically connected objects (no floating elements)
 - Single-person scenes to prevent ghost figures
 
-### Fact Verification
-Scripts are automatically verified against EHS (Environmental Health & Safety) reference data. Claims about regulations, procedures, and statistics are flagged for review if they can't be verified.
+### Output
+
+Videos are assembled as MP4 files (H.264) with fade transitions between scenes. Each scene pairs one illustration (or AI video clip in Tier 3) with its narration audio. Typical output is 1–3 minutes for a 3–6 scene video. Resolution matches the image provider (1024x1024 for DALL·E 3, varies by provider).
 
 ## Project structure
 
@@ -164,30 +186,25 @@ src/
 
 ## Testing video generation
 
-1. **One-time setup:** Install dependencies and set your OpenAI API key:
-   ```bash
-   npm install
-   cp .env.example .env
-   # Edit .env and set OPENAI_API_KEY=sk-...
-   ```
+After completing [Setup](#setup):
 
-2. **Automated API test** (script + one image + one audio; no full video):
+1. **Automated API test** (script + one image + one audio; no full video):
    - In one terminal: `npm run dev`
    - In another terminal: `npm run test:video`
    - The script calls `/api/generate-script`, then one `/api/generate-image` and one `/api/generate-audio`. If all succeed, the pipeline is working.
 
-3. **Full video in the browser:**
+2. **Full video in the browser:**
    - Run `npm run dev` and open [http://localhost:3000](http://localhost:3000).
    - Enter a prompt (e.g. "A safety training video about forklift safety in a warehouse").
    - Click **Generate script**, then **Create video**. Download the MP4 when it finishes.
-   - **Note:** Full video requires FFmpeg installed (`brew install ffmpeg` on macOS).
 
 ## Notes
+
+> **⚠ Production deployment:** This app has no built-in authentication. Every API route calls paid external services (OpenAI, Replicate). Before any shared or public deployment, add authentication and review rate limiting configuration. See [SECURITY.md](SECURITY.md) and [AUDIT.md](AUDIT.md) for guidance.
 
 - **API costs:** See [Estimated cost per video](#estimated-cost-per-video) above. Cost depends on length and scene count.
 - **Payload size:** Many or long scenes mean a large request to `/api/assemble-video`. If you hit body size limits, reduce the number of scenes or deploy with a higher limit.
 - **Compliance:** Treat generated content as a draft. Have safety or legal review before using in official training.
-- **Production:** The app has no built-in authentication. For public or shared deployment, add auth and consider rate limiting; see [SECURITY.md](SECURITY.md) and `AUDIT.md` for guidance.
 
 ## Contributing
 
